@@ -94,12 +94,12 @@
 <meta property="og:site_name" content="TomAlen">
 <meta property="og:description" content="mybatis集成atomikos实现分布式事务什么是jta-atomikos以及分布式事务？Atomikos 是一个为Java平台提供增值服务的并且开源类事务管理器。分布式事务就是指事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。简而言之，就是一次大的操作由不同的小操作组成，这些小的操作分布在不同的服务器上，且属于不同的应用，分布式事务需要保证这些">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://www.google.com/2019/08/19/mybatis集成atomikos实现分布式事务/19-8-19-jta">
-<meta property="og:updated_time" content="2019-08-19T02:24:24.053Z">
+<meta property="og:image" content="https://www.google.com/2019/08/19/mybatis集成atomikos实现分布式事务/images/19-8-19-jta">
+<meta property="og:updated_time" content="2019-08-19T02:27:12.793Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mybatis集成atomikos实现分布式事务">
 <meta name="twitter:description" content="mybatis集成atomikos实现分布式事务什么是jta-atomikos以及分布式事务？Atomikos 是一个为Java平台提供增值服务的并且开源类事务管理器。分布式事务就是指事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。简而言之，就是一次大的操作由不同的小操作组成，这些小的操作分布在不同的服务器上，且属于不同的应用，分布式事务需要保证这些">
-<meta name="twitter:image" content="https://www.google.com/2019/08/19/mybatis集成atomikos实现分布式事务/19-8-19-jta">
+<meta name="twitter:image" content="https://www.google.com/2019/08/19/mybatis集成atomikos实现分布式事务/images/19-8-19-jta">
 
 
 
@@ -428,7 +428,7 @@
 
 <h3 id="2、副数据源配置，把Message的数据库整合进去，连接副数据源"><a href="#2、副数据源配置，把Message的数据库整合进去，连接副数据源" class="headerlink" title="2、副数据源配置，把Message的数据库整合进去，连接副数据源"></a>2、副数据源配置，把Message的数据库整合进去，连接副数据源</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableConfigurationProperties</span></span><br><span class="line"><span class="meta">@EnableAutoConfiguration</span></span><br><span class="line"><span class="meta">@MapperScan</span>(basePackages = <span class="string">"com.tomalen.springlanuch.generator.db2"</span>,</span><br><span class="line">        sqlSessionTemplateRef = <span class="string">"secondarySqlSessionTemplate"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecondaryDataSourceJTAConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span>(<span class="string">"secondaryDataSource"</span>)</span><br><span class="line">    <span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"secondarydb"</span>)</span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">secondaryDataSource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> AtomikosDataSourceBean();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span>(<span class="string">"secondarySqlSessionFactory"</span>)</span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SqlSessionFactory <span class="title">secondarySqlSessionFactory</span><span class="params">(@Qualifier(<span class="string">"secondaryDataSource"</span>)</span> DataSource dataSource)</span></span><br><span class="line"><span class="function">            <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        SqlSessionFactoryBean bean = <span class="keyword">new</span> SqlSessionFactoryBean();</span><br><span class="line">        bean.setDataSource(dataSource);</span><br><span class="line">        <span class="comment">//bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*.xml"));</span></span><br><span class="line">        bean.setTypeAliasesPackage(<span class="string">"com.tomalen.springlanuch.generator.db2"</span>);</span><br><span class="line">        <span class="keyword">return</span> bean.getObject();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span>(<span class="string">"secondarySqlSessionTemplate"</span>)</span><br><span class="line">    <span class="meta">@Primary</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SqlSessionTemplate <span class="title">secondarySqlSessionTemplate</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            @Qualifier(<span class="string">"secondarySqlSessionFactory"</span>)</span> SqlSessionFactory sqlSessionFactory) <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SqlSessionTemplate(sqlSessionFactory);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="db1-和-db2-的目录结构"><a href="#db1-和-db2-的目录结构" class="headerlink" title="db1 和 db2 的目录结构"></a>db1 和 db2 的目录结构</h2><img src="19-8-19-jta">
+<h2 id="db1-和-db2-的目录结构"><a href="#db1-和-db2-的目录结构" class="headerlink" title="db1 和 db2 的目录结构"></a>db1 和 db2 的目录结构</h2><img src="images/19-8-19-jta">
 
 <h2 id="修改ArticleServiceImpl文件，将message插入进去"><a href="#修改ArticleServiceImpl文件，将message插入进去" class="headerlink" title="修改ArticleServiceImpl文件，将message插入进去"></a>修改ArticleServiceImpl文件，将message插入进去</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> ArticleMapper articleMapper;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> MessageDao messageDao;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">saveArticle</span><span class="params">(Article article)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//测试分布式管理，同时插入两个数据库</span></span><br><span class="line">    Message message = <span class="keyword">new</span> Message();</span><br><span class="line">    message.setName(<span class="string">"Kobe"</span>);</span><br><span class="line">    message.setContent(<span class="string">"Shoot Three points!"</span>);</span><br><span class="line">    messageDao.insert(message);</span><br><span class="line">    <span class="keyword">return</span> articleMapper.insert(article);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -503,6 +503,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/20/SpringBoot整合MongoDB/" rel="prev" title="SpringBoot整合MongoDB">
+                SpringBoot整合MongoDB <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -587,7 +591,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -609,7 +613,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -718,7 +722,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">2.7k</span>
+    <span title="Site words total count">4.1k</span>
   
 </div>
 
