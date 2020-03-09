@@ -1,6 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[设计模式--单例模式]]></title>
+    <url>%2F2020%2F03%2F09%2F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[设计模式(1) 单例模式单例模式的概念单例模式是比较常见的一种设计模式，设计的目的是保证一个类有一个实例，而且自行实例化并向整个系统提供这个实例，避免频繁创建对象，可以提高对象的复用性，节约内存。 类加载(classLoader)的顺序类加载(classLoader)机制一本遵循以下几种顺序。 先执行父类的静态代码块和静态变量初始化 执行子类的静态代码块和静态变量初始化 执行父类的实例变量初始化 执行父类的构造函数 执行子类的实例变量初始化 执行子类的构造函数 特别注意，加载类的过程是线程私有的，别的线程无法进入。 两种实现方式–懒汉和饿汉在单例模式的实现过程中，一般分为懒汉式和饿汉式。懒汉式：在类加载时不完成初始化，等到第一次使用时才实例化，实现的是懒加载模式。饿汉式：在类加载时就完成了初始化，所以类加载比较慢，获取对象的速度却比较快。 源码饿汉式12345678910111213141516171819202122232425package top.zwhzzz.Design.Singletone;/** * @ClassName SingletonErHan 单例模式==&gt;恶汉模式 * @Description TODO * @Author TomAlen * @Date 2020/3/9 15:14 * @Version 1.0 *///恶汉式的设计模式：在类加载的过程中进行了实例化， 避免了多线程的的同步问题。public class SingletonErHan &#123; private static final SingletonErHan singletonErHan = new SingletonErHan(); //无参构造器 public SingletonErHan() &#123; &#125; //getter方法，获取实例化的singletonErHan public static SingletonErHan getSingletonErHan() &#123; return singletonErHan; &#125;&#125; 懒汉式12345678910111213141516171819202122232425262728package top.zwhzzz.Design.Singletone;/** * @ClassName SingletonLanHan 单例模式==&gt;懒汉模式 * @Description TODO * @Author TomAlen * @Date 2020/3/9 15:15 * @Version 1.0 *///懒汉式单例模式，在类实例化的时候进行懒加载，添加了synchronized关键字，解决了线程不安全的问题。public class SingletonLanHan &#123; private static SingletonLanHan singletonLanHan = null; public SingletonLanHan() &#123; &#125; //加锁机制，如果有两个线程同时访问，一个进入线程中，另一个则在等待，解决了线程不安全的问题。但是缺点也很明显，因为synchronized是修饰整个方法，每个线程访问都要进行同步，会造成资源的浪费。 public static synchronized SingletonLanHan getSingletonLanHan() &#123; if(singletonLanHan == null) &#123; singletonLanHan = new SingletonLanHan(); &#125; return singletonLanHan; &#125;&#125; 双层检查懒汉式123456789101112131415161718192021222324252627282930package top.zwhzzz.Design.Singletone;/** * @ClassName SingletonLanHanDouble * @Description TODO * @Author TomAlen * @Date 2020/3/9 17:09 * @Version 1.0 *///双重检查懒汉式public class SingletonLanHanDouble &#123; private static volatile SingletonLanHanDouble instance= null; public SingletonLanHanDouble() &#123; &#125; //synchronized关键字加在代码块上了，而不是在方法上，可以提高效率。 public static SingletonLanHanDouble getInstance() &#123; if(instance == null) &#123; synchronized (SingletonLanHanDouble.class) &#123; if(instance == null) &#123; instance = new SingletonLanHanDouble(); &#125; &#125; &#125; return instance; &#125;&#125;]]></content>
+      <categories>
+        <category>设计模式</category>
+      </categories>
+      <tags>
+        <tag>设计模式</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[算法--数组中重复的数]]></title>
+    <url>%2F2020%2F03%2F09%2F%E7%AE%97%E6%B3%95-%E6%95%B0%E7%BB%84%E4%B8%AD%E9%87%8D%E5%A4%8D%E7%9A%84%E6%95%B0%2F</url>
+    <content type="text"><![CDATA[算法–数组中重复的数算法描述在一个长度为 n 的数组 nums 里的所有数字都在 0～n-1 的范围内。数组中某些数字是重复的，但不知道有几个数字重复了，也不知道每个数字重复了几次。请找出数组中任意一个重复的数字。 示例 1： 123输入：[2, 3, 1, 0, 2, 5, 3]输出：2 或 3 限制： 12 &lt;= n &lt;= 100000 来源：力扣（LeetCode） 个人思路因为是要在数组中找出重复的数,所以第一思路就是用Set集合进行存储，而要找出任意一个数即可，所以只要出现了这个数，就可以跳出循环了。 1 初始化一个Set集合，存储不重复的元素 2 初始化一个重复的数字repeat = 0 3 遍历数组 如果set存储了重复的元素，就添加不成功，跳出循环，将重复的数字赋值给repeat 具体代码123456789101112131415class Solution &#123; public int findRepeatNumber(int[] nums) &#123; //思路：初始化一个Set集合，存储不重复的数字 Set&lt;Integer&gt; sets = new HashSet&lt;&gt;(); int repates = 0; //遍历数组 for (int num : nums) &#123; if(!sets.add(num)) &#123; repates = num; break; &#125; &#125; return repates; &#125;&#125;]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>leetcode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[VPN、APN]]></title>
+    <url>%2F2020%2F03%2F06%2FVPN%E3%80%81APN%2F</url>
+    <content type="text"><![CDATA[VPN和APN的概念最近项目经理给了我一个任务，就是去了解下VPN、APN技术，作为计算机网络的菜鸡，感觉这是一个艰巨的任务，但是作为项目中的一员，还得去干~ VPNVPN全名为虚拟专用网络，属于远程访问技术，简单的说就是利用公用网络架设私有网络。可以这样理解，利用公共的网通过VPN这个桥梁搭建自己的私有网络，其中也有这样一层说法，就是翻墙。 APNAPN是一种网络接入技术，通过手机上网设置的一个参数，决定了手机通过哪种接入方式来访问网络。具体的做法如下： 1：打开手机设置 2：点击”双卡和移动网络” 3：点击”中国移动/联通/电信” 4：点击”接入点名称(APN)” 5：点击新建APN，输入相应的设置后保存即可访问你自己设置的接入点来访问网络。]]></content>
+      <tags>
+        <tag>VPN</tag>
+        <tag>APN</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Git的常用操作]]></title>
+    <url>%2F2020%2F03%2F05%2FGit%E7%9A%84%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%2F</url>
+    <content type="text"><![CDATA[Git的常用操作什么是GitGit是一个开源的分布式版本控制系统，可以有效、高速地处理从很小到非常大的项目版本管理。在很多的公司里都在使用这种版本控制工具，可以有效的对代码进行管理，能有效的开展协同办公，使公司员工能各司其职，便于公司的开发和项目管理。 Git的常规操作这里简单介绍一下本人常用的Git操作。 1、查看本次操作属于哪个分支上 1git branch 2、新建一个新的分支xxx 1git checkout -b xxx 3、查看本地库的状态 1git status 4、将代码添加到暂存区 1git add . 5、将代码提交到本地库，将本次提交备注为xxxxx 1git commit -m "xxxxx" 6、将代码提交到远程仓库 12345&lt;!-- 第一次提交 --&gt;git push -u origin xxx &lt;!-- 第一次提交后 --&gt;git push 7、更新本地代码 1git pull 8、将分支xxx的代码合并到master分支上,首先得切换到主分支master上，将分支xxx的代码合并，最后提交到远程仓库。 123git checkout mastergit merge xxxgit push 今天是3月5日，是2020年的第一篇博客，我承认自己最近有点懒，所以要走出舒适圈，对自己进行充电学习，特别是在这个疫情大环境下，如果不想被社会淘汰，那就好好努力吧！]]></content>
+      <categories>
+        <category>版本控制</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[个人简历]]></title>
+    <url>%2F2019%2F09%2F02%2F%E4%B8%AA%E4%BA%BA%E7%AE%80%E5%8E%86%2F</url>
+    <content type="text"><![CDATA[联系方式 手机：15279615192 Email：zwhzzz1127@gmail.com 微信号：zwh15279615192 QQ： 1127568664 个人信息 姓名：钟炜宏 性别：男 年龄：23 学历：本科 工作经验：1年 毕业院校：九江学院 所学专业：信息管理与信息系统 所获证书：计算机二级Java、CET-4、软件设计师 技术博客：https://www.zwhzzz.top 期望职位：Java工程师 期望薪资：10k 期望城市：深圳 个人介绍本人毕业于九江学院，在校期间主要对Java方面的进行了学习，大四期间在广州奥格智能科技有限公司南昌分公司进行实习，在此期间学会了很多学校里学不到的东西。本人的熟悉运用SpringBoot、SSM框架，了解前端的Vue+ElementUI、JQuery以及BootStrap框架，熟悉掌握数据库基本理论，熟练MySQL的使用。本人对编程具有浓厚的兴趣！ 工作经验 项目经历毕业设计-基于SSM的酒店管理系统的设计与实现 2019年07月 这是一个基于SSM框架的酒店管理系统，前端采用easyUI框架，使用mysql数据库进行后台数据库的搭建，应用ECharts工具完成营业额的数据可视化操作。主要的功能有后台用户信息管理、后台用户角色管理、后台用户权限分配、菜单管理、楼层管理、房型管理、房间管理、客户管理、预定订单管理、入住管理、统计分析管理、日志管理等功能。具体的项目请见 https://github.com/TomAlen/tomalen1.github.io.git 基于SSM的学生管理系统的设计与实现 2019年03月 一个基于SSM框架的简单的学生管理系统，可以对管理员、学生、教师、班级以及年级的简单的增删改查操作，涉及到模糊查询、分页查询。运用了权限分配的知识对管理员、学生、教师三者进行权限分配。前端用的是easy-ui框架,后台使用mysql数据库进行后台的数据搭建。具体的项目请见 https://github.com/TomAlen/tomalen1.github.io.git 招聘信息系统的设计与实现 2018年09月 招聘信息系统是本人写的第一个基于SSM框架的系统，后端采用 spring+spring-mvc+mybatis框架进行设计和编写，数据库采用mysql数据库。前端采用的是layui框架。其主要功能有对简历的增删改查、对用户信息的增删改查、对招聘信息的维护和发布。]]></content>
+      <categories>
+        <category>简历</category>
+      </categories>
+      <tags>
+        <tag>简历</tag>
+        <tag>个人历程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[SpringBoot对Github授权登录操作]]></title>
     <url>%2F2019%2F08%2F26%2FSpringBoot%E5%AF%B9Github%E6%8E%88%E6%9D%83%E7%99%BB%E5%BD%95%E6%93%8D%E4%BD%9C%2F</url>
     <content type="text"><![CDATA[SpringBoot对Github授权登录操作首先了解github授权的API流程，具体网址登陆github的官网https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/创建OAuth应用程序，在githubAPI上有具体的操作。具体见https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/ 有详细的操作步骤。注册完如图所示： 具体的操作流程 社区发送authorize Github回调redirect_url给社区 社区发送access_token携带code Github返回access_token 社区发送User携带access_token Github返回user信息给社区 存取数据。更新登录状态 把从scope获取到的user信息返回给user 代码实现授权登录1、先定义一个AuthorizeController，把从后端获取的user回调信息返回到主页面 1234567891011121314151617181920212223242526@Autowiredprivate GithubProvider githubProvider;/** * 授权github返回主页面 * @param code * @param state * @return */@GetMapping("/callback")public String callback(@RequestParam(name = "code")String code, @RequestParam(name = "state")String state) &#123; //实例化AccessTokenDTO AccessTokenDTO accessTokenDTO = new AccessTokenDTO(); accessTokenDTO.setCode(code); accessTokenDTO.setRedirect_uri("http://localhost:8080/callback"); accessTokenDTO.setClient_id("自己注册的client_id"); accessTokenDTO.setState(state); accessTokenDTO.setClient_secret("自己注册的client_secret"); String accessToken = githubProvider.getAccessToken(accessTokenDTO); //得到Github User信息 GithubUser githubUser = githubProvider.githubUser(accessToken); System.out.println(githubUser.getName()); return "index";&#125; 2、定义DTO数据传输模型，对要转换的数据进行操作。 对获取的AccessToken进行定义 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950public class AccessTokenDTO &#123; //githubAPI第二步： GitHub将用户重定向回您的网站 返回的类型参数 private String client_id; private String client_secret; private String code; private String redirect_uri; private String state; public String getClient_id() &#123; return client_id; &#125; public void setClient_id(String client_id) &#123; this.client_id = client_id; &#125; public String getClient_secret() &#123; return client_secret; &#125; public void setClient_secret(String client_secret) &#123; this.client_secret = client_secret; &#125; public String getCode() &#123; return code; &#125; public void setCode(String code) &#123; this.code = code; &#125; public String getRedirect_uri() &#123; return redirect_uri; &#125; public void setRedirect_uri(String redirect_uri) &#123; this.redirect_uri = redirect_uri; &#125; public String getState() &#123; return state; &#125; public void setState(String state) &#123; this.state = state; &#125;&#125; github获取的用户模型 123456789101112131415161718192021222324252627282930313233public class GithubUser &#123; //github的姓名 private String name; //id private Long id; //描述 private String bio; public String getName() &#123; return name; &#125; public void setName(String name) &#123; this.name = name; &#125; public Long getId() &#123; return id; &#125; public void setId(Long id) &#123; this.id = id; &#125; public String getBio() &#123; return bio; &#125; public void setBio(String bio) &#123; this.bio = bio; &#125;&#125; 3、定义一个提供者，具体作用为相当于一个中间件，对获取的数据进行操作。其中涉及了okHttp的测试工具，具体可见okHttp官网进行学习：https://square.github.io/okhttp/ 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061@Componentpublic class GithubProvider &#123; /** * 第一步、 * 得到AccessToken * @param accessTokenDTO * @return */ public String getAccessToken(AccessTokenDTO accessTokenDTO)&#123; MediaType mediaType = MediaType.get("application/json; charset=utf-8"); OkHttpClient client = new OkHttpClient(); //把MediaType对象解析成srting类型 RequestBody body = RequestBody.create(mediaType,JSON.toJSONString(accessTokenDTO)); Request request = new Request.Builder() //github重定向个人网站url，交换access_token .url("https://github.com/login/oauth/access_token") .post(body) .build(); try (Response response = client.newCall(request).execute()) &#123; //得到返回的access_token String string = response.body().string(); //拆分得到access_token //先以&amp;号拆分，后以=号拆分 String[] split = string.split("&amp;"); String tokenString = split[0]; String access_token = tokenString.split("=")[1]; System.out.println(string); return access_token; &#125;catch (Exception e)&#123; e.printStackTrace(); &#125; return null; &#125; /** * 把得到的accessToken传入User对象，得到user对象的信息 * 得到返回的Scope的User信息 * 定义的githubUser有三个属性 * @param accessToken * @return */ public GithubUser githubUser(String accessToken) &#123; OkHttpClient client = new OkHttpClient(); Request request = new Request.Builder() .url("https://api.github.com/user?access_token=" + accessToken) .build(); try&#123; Response response = client.newCall(request).execute(); String string = response.body().string(); //把得到的从url得到的json数据解析成GithubUser类对象 GithubUser githubUser = JSON.parseObject(string, GithubUser.class); return githubUser; &#125;catch (Exception e)&#123; e.printStackTrace(); &#125; return null; &#125;&#125; 具体的操作就是这样。写的不怎么好，原理大致就是这样。]]></content>
@@ -58,18 +114,6 @@
       <tags>
         <tag>Spring Boot</tag>
         <tag>spring Data JPA</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[个人简历]]></title>
-    <url>%2F2019%2F08%2F14%2F%E4%B8%AA%E4%BA%BA%E7%AE%80%E5%8E%86%2F</url>
-    <content type="text"><![CDATA[联系方式 手机：15279615192 Email：zwhzzz1127@gmail.com 微信号：zwh15279615192 QQ： 1127568664 个人信息 姓名：钟炜宏 性别：男 年龄：23 学历：本科 毕业院校：九江学院（2020届毕业生） 所学专业：信息管理与信息系统 所获证书：计算机二级java、CET-4 技术博客：https://www.zwhzzz.top 期望职位：java研发实习生/安卓开发工程师 期望薪资：5K-8K 期望城市：南昌、深圳 个人介绍作为应届生，我在校期间主攻java方向，了解到了Java的基础理论。对javaweb方向有浓厚的兴趣，深入学习了SSM框架的基础理论，还运用SSM框架写了几个小demo。熟悉一些前端的知识，如jQuery、Bootstrap、EasyUI的使用。而且还学习了数据库方面的知识：mysql、oracle。熟练使用git版本控制工具。我对编程充满了兴趣，热爱编程！ 项目经历招聘信息系统的设计与实现 2018年09月 招聘信息系统是本人写的第一个基于SSM框架的系统，后端采用 spring+spring-mvc+mybatis框架进行设计和编写，数据库采用mysql数据库。前端采用的是layui框架。其主要功能有对简历的增删改查、对用户信息的增删改查、对招聘信息的维护和发布。 基于SSM的学生管理系统的设计与实现 2019年03月 一个基于SSM框架的简单的学生管理系统，可以对管理员、学生、教师、班级以及年级的简单的增删改查操作，涉及到模糊查询、分页查询。运用了权限分配的知识对管理员、学生、教师三者进行权限分配。前端用的是easy-ui框架,后台使用mysql数据库进行后台的数据搭建。具体的项目请见 https://github.com/TomAlen/tomalen1.github.io.git 毕业设计-基于SSM的酒店管理系统的设计与实现 2019年07月 这是一个基于SSM框架的酒店管理系统，前端采用easyUI框架，使用mysql数据库进行后台数据库的搭建，应用ECharts工具完成营业额的数据可视化操作。主要的功能有后台用户信息管理、后台用户角色管理、后台用户权限分配、菜单管理、楼层管理、房型管理、房间管理、客户管理、预定订单管理、入住管理、统计分析管理、日志管理等功能。具体的项目请见 https://github.com/TomAlen/tomalen1.github.io.git]]></content>
-      <categories>
-        <category>简历</category>
-      </categories>
-      <tags>
-        <tag>简历</tag>
-        <tag>个人历程</tag>
       </tags>
   </entry>
 </search>
